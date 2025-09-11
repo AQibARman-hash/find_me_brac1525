@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - Memories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-link.secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .nav-link.secondary:hover {
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .create-memory-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .memory-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .memory-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .memory-meta {
+            flex-grow: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .memory-location {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .memory-time {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .visibility-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .visibility-public {
+            background: rgba(72, 187, 120, 0.1);
+            color: #48bb78;
+        }
+
+        .visibility-friends {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .visibility-private {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+
+        .memory-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .memory-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .memory-media {
+            margin-bottom: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .memory-media img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+        }
+
+        .memory-media video {
+            width: 100%;
+            max-height: 400px;
+        }
+
+        .memory-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .memory-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .like-btn.liked {
+            color: #e53e3e;
+        }
+
+        .like-btn:hover {
+            color: #e53e3e;
+        }
+
+        .stats {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #667eea;
+            background: #f0f4f8;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-create {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .btn-create:hover {
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .pagination .current {
+            padding: 10px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            color: #718096;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(72, 187, 120, 0.1);
+            color: #2f855a;
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .message.error {
+            background: rgba(245, 101, 101, 0.1);
+            color: #c53030;
+            border: 1px solid rgba(245, 101, 101, 0.2);
+        }
+
+        .create-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .create-form.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .memory-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .memory-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">📸 Campus Memories</div>
+            <div class="header-nav">
+                <a href="{% url 'dashboard' %}" class="nav-link">🏠 Dashboard</a>
+                <a href="{% url 'my_memories' %}" class="nav-link secondary">📚 My Memories</a>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Create Memory Section -->
+        <div class="create-memory-card">
+            <button class="toggle-btn" onclick="toggleCreateForm()">➕ Share a New Memory</button>
+            
+            <div class="create-form" id="createForm">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="create_memory">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Memory Title</label>
+                        <input type="text" name="memory_title" class="form-input" placeholder="Give your memory a title..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-textarea" placeholder="Share your story..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <select name="location_id" class="form-select" required>
+                            <option value="">Select location...</option>
+                            {% for location in locations %}
+                            <option value="{{ location.location_id }}">{{ location.location_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Visibility</label>
+                        <select name="visibility" class="form-select">
+                            {% for value, label in memory_visibility_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tags (comma separated)</label>
+                        <input type="text" name="tags" class="form-input" placeholder="e.g. graduation, friends, study session">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Add Photo/Video (optional)</label>
+                        <input type="file" name="media_file" class="file-input" accept="image/*,video/*">
+                    </div>
+
+                    <button type="submit" class="btn btn-create">Share Memory</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Memories Feed -->
+        {% if memories_page %}
+            {% for memory in memories_page %}
+            <div class="memory-card">
+                <div class="memory-header">
+                    <div class="user-avatar">
+                        {% if memory.user.first_name and memory.user.last_name %}
+                            {{ memory.user.first_name.0 }}{{ memory.user.last_name.0 }}
+                        {% else %}
+                            {{ memory.user.username.0|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="memory-meta">
+                        <div class="user-name">
+                            {% if memory.user.first_name and memory.user.last_name %}
+                                {{ memory.user.first_name }} {{ memory.user.last_name }}
+                            {% else %}
+                                {{ memory.user.username }}
+                            {% endif %}
+                        </div>
+                        <div class="memory-location">📍 {{ memory.location.location_name }}</div>
+                        <div class="memory-time">{{ memory.creation_date|timesince }} ago</div>
+                    </div>
+                    <div class="visibility-badge visibility-{{ memory.visibility }}">
+                        {{ memory.get_visibility_display }}
+                    </div>
+                </div>
+
+                <div class="memory-title">{{ memory.memory_title }}</div>
+                <div class="memory-description">{{ memory.description }}</div>
+
+                {% if memory.media_file %}
+                <div class="memory-media">
+                    {% if memory.media_type == 'image' %}
+                    <img src="{{ memory.media_file.url }}" alt="{{ memory.memory_title }}" loading="lazy">
+                    {% elif memory.media_type == 'video' %}
+                    <video controls>
+                        <source src="{{ memory.media_file.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if memory.tags %}
+                <div class="memory-tags">
+                    {% for tag in memory.tags %}
+                    <span class="tag">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="memory-actions">
+                    <div class="action-buttons">
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_like">
+                            <input type="hidden" name="memory_id" value="{{ memory.memory_id }}">
+                            <button type="submit" class="like-btn {% if memory.user_has_liked %}liked{% endif %}">
+                                ❤️ {{ memory.likes_count }}
+                            </button>
+                        </form>
+                    </div>
+                    <div class="stats">
+                        👁️ {{ memory.view_count }} views
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if memories_page.has_other_pages %}
+            <div class="pagination">
+                {% if memories_page.has_previous %}
+                    <a href="?page=1">« First</a>
+                    <a href="?page={{ memories_page.previous_page_number }}">‹ Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ memories_page.number }} of {{ memories_page.paginator.num_pages }}
+                </span>
+
+                {% if memories_page.has_next %}
+                    <a href="?page={{ memories_page.next_page_number }}">Next ›</a>
+                    <a href="?page={{ memories_page.paginator.num_pages }}">Last »</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <h3>No Memories Yet</h3>
+                <p>Be the first to share a memory or connect with friends to see their memories!</p>
+                <button class="btn btn-create" onclick="toggleCreateForm()">Share Your First Memory</button>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleCreateForm() {
+            const form = document.getElementById('createForm');
+            form.classList.toggle('active');
+        }
+
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelector('.messages');
+            if (messages) {
+                messages.style.opacity = '0';
+                setTimeout(() => messages.remove(), 500);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>  
+
+

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - My Memories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-link.secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .nav-link.secondary:hover {
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .controls-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-toggle {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-toggle:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-toggle.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .memory-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .memory-card.archived {
+            opacity: 0.7;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .memory-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .memory-description {
+            color: #4a5568;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .memory-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .memory-location {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .memory-date {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .memory-media {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            max-height: 200px;
+        }
+
+        .memory-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .memory-media video {
+            width: 100%;
+            height: auto;
+        }
+
+        .memory-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .memory-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .visibility-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .visibility-public {
+            background: rgba(72, 187, 120, 0.1);
+            color: #48bb78;
+        }
+
+        .visibility-friends {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .visibility-private {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+
+        .memory-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-archive {
+            background: linear-gradient(45deg, #ffa726, #fb8c00);
+            color: white;
+        }
+
+        .btn-archive:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 167, 38, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(238, 90, 82, 0.4);
+        }
+
+        .visibility-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .visibility-select {
+            padding: 4px 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 11px;
+            background: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .pagination .current {
+            padding: 10px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            color: #718096;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(72, 187, 120, 0.1);
+            color: #2f855a;
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .message.error {
+            background: rgba(245, 101, 101, 0.1);
+            color: #c53030;
+            border: 1px solid rgba(245, 101, 101, 0.2);
+        }
+
+        .archived-badge {
+            position: absolute;
+            top: 50px;
+            right: 15px;
+            background: rgba(237, 137, 54, 0.1);
+            color: #ed8936;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .controls-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .memories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">📚 My Memories</div>
+            <div class="header-nav">
+                <a href="{% url 'dashboard' %}" class="nav-link">🏠 Dashboard</a>
+                <a href="{% url 'memories_feed' %}" class="nav-link secondary">📸 All Memories</a>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ memory_stats.total_memories }}</div>
+                    <div class="stat-label">Total Memories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ memory_stats.active_count }}</div>
+                    <div class="stat-label">Active Memories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ memory_stats.archived_count }}</div>
+                    <div class="stat-label">Archived</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div>
+                <h3 style="color: #2d3748; margin-bottom: 5px;">Your Memory Collection</h3>
+                <p style="color: #718096; font-size: 14px;">Manage and organize your campus memories</p>
+            </div>
+            <a href="{% url 'memories_feed' %}?create=true" class="nav-link secondary">➕ Add New Memory</a>
+        </div>
+
+        <!-- Filter Toggle -->
+        <div style="margin-bottom: 20px; text-align: center;">
+            {% if show_archived %}
+            <a href="{% url 'my_memories' %}" class="filter-toggle">Show Active Only</a>
+            {% else %}
+            <a href="{% url 'my_memories' %}?archived=true" class="filter-toggle">Show Archived</a>
+            {% endif %}
+        </div>
+
+        <!-- Memories Grid -->
+        <!-- Memories Grid -->
+{% if memories_page %}
+<div class="memories-grid">
+    {% for memory in memories_page %}
+    <div class="memory-card {% if memory.is_archived %}archived{% endif %}">
+        
+        <!-- Visibility Badge -->
+        <div class="visibility-badge visibility-{{ memory.visibility }}">
+            {{ memory.get_visibility_display }}
+        </div>
+
+        <!-- Archived Badge -->
+        {% if memory.is_archived %}
+        <div class="archived-badge">ARCHIVED</div>
+        {% endif %}
+
+        <!-- Memory Title -->
+        <div class="memory-title">{{ memory.memory_title }}</div>
+
+        <!-- Memory Meta -->
+        <div class="memory-meta">
+            <div class="memory-location">📍 {{ memory.location.location_name }}</div>
+            <div class="memory-date">{{ memory.creation_date|date:"M d, Y" }}</div>
+        </div>
+
+        <!-- Memory Description -->
+        <div class="memory-description">{{ memory.description }}</div>
+
+        <!-- Media (Image or Video) -->
+        {% if memory.media_file %}
+        <div class="memory-media">
+        {% if ".mp4" in memory.media_file.url|lower %}
+            <video controls>
+                <source src="{{ memory.media_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <img src="{{ memory.media_file.url }}" alt="{{ memory.memory_title }}">
+        {% endif %}
+    </div>
+    {% endif %}
+
+    </div>
+    {% endfor %}
+    </div>
+    {% else %}
+    <p>No memories found.</p>
+    {% endif %}   

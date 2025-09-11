@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Locations - Campus Connect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .filters {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters h3 {
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-size: 18px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+            color: #2d3748;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .filter-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .apply-filters-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .apply-filters-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .location-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .location-header {
+            padding: 20px 20px 15px 20px;
+        }
+
+        .location-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .location-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .memory-count {
+            background: rgba(250, 112, 154, 0.1);
+            color: #fa709a;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-bottom: 15px;
+        }
+
+        .memory-photo {
+            aspect-ratio: 1;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .memory-photo:hover {
+            opacity: 0.8;
+        }
+
+        .memory-photo.large {
+            grid-row: span 2;
+            grid-column: span 2;
+        }
+
+        .memory-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .no-photos {
+            padding: 40px 20px;
+            text-align: center;
+            color: #a0aec0;
+        }
+
+        .no-photos-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.3;
+        }
+
+        .view-more {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 8px 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 20px 20px 20px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .view-more:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .recent-memories-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recent-memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .memory-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .memory-info {
+            padding: 15px;
+        }
+
+        .memory-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .memory-location-info {
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .memory-author {
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #718096;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        .results-summary {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        /* Modal styles for photo viewing */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 20px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .locations-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .recent-memories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .photos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-title">Discover Locations</h1>
+            <a href="/dashboard/" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <h3>Filter Locations</h3>
+            <form method="GET" class="filter-form">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Category</label>
+                        <select name="category" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="study_space" {% if current_category == 'study_space' %}selected{% endif %}>Study Space</option>
+                            <option value="wifi_quality" {% if current_category == 'wifi_quality' %}selected{% endif %}>WiFi Quality</option>
+                            <option value="cleanliness" {% if current_category == 'cleanliness' %}selected{% endif %}>Cleanliness</option>
+                            <option value="noise_level" {% if current_category == 'noise_level' %}selected{% endif %}>Noise Level</option>
+                            <option value="general" {% if current_category == 'general' %}selected{% endif %}>General</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Minimum Rating</label>
+                        <select name="min_rating" class="filter-select">
+                            <option value="">Any Rating</option>
+                            <option value="7" {% if current_min_rating == '7' %}selected{% endif %}>7+ Stars</option>
+                            <option value="8" {% if current_min_rating == '8' %}selected{% endif %}>8+ Stars</option>
+                            <option value="9" {% if current_min_rating == '9' %}selected{% endif %}>9+ Stars</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-checkbox">
+                            <input type="checkbox" name="has_photos" value="true" id="has_photos" {% if has_photos_only %}checked{% endif %}>
+                            <label for="has_photos" class="filter-label">Only locations with photos</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="apply-filters-btn">Apply Filters</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Summary -->
+        {% if locations %}
+        <div class="results-summary">
+            Showing {{ locations|length }} location{{ locations|length|pluralize }} 
+            {% if has_photos_only %}with photos{% endif %}
+            {% if current_category %} in {{ current_category|title }}{% endif %}
+            {% if current_min_rating %} with {{ current_min_rating }}+ rating{% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Locations Grid -->
+        <div class="locations-grid">
+            {% for location in locations %}
+            <div class="location-card">
+                <div class="location-header">
+                    <h3 class="location-name">{{ location.location_name }}</h3>
+                    <div class="location-stats">
+                        <div class="stat-item">
+                            {% if location.avg_rating %}
+                            <div class="rating-display">
+                                ⭐ {{ location.avg_rating|floatformat:1 }}
+                            </div>
+                            {% else %}
+                            <div class="rating-display">
+                                ⭐ No ratings
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="stat-item">
+                            <div class="memory-count">
+                                📸 {{ location.memory_count }} photo{{ location.memory_count|pluralize }}
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            📝 {{ location.review_count }} review{{ location.review_count|pluralize }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if location.memories.all %}
+                <div class="photos-grid">
+                    {% for memory in location.memories.all|slice:":6" %}
+                    <img src="{{ memory.media_file.url }}" 
+                         alt="{{ memory.memory_title }}" 
+                         class="memory-photo {% if forloop.first and location.memories.all|length > 1 %}large{% endif %}"
+                         onclick="openModal('{{ memory.media_file.url }}', '{{ memory.memory_title|escapejs }}', '{{ memory.user.get_full_name|default:memory.user.username|escapejs }}', '{{ location.location_name|escapejs }}', '{{ memory.description|escapejs }}')">
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-photos">
+                    <div class="no-photos-icon">📷</div>
+                    <p>No public photos yet</p>
+                    <small>Be the first to share a memory here!</small>
+                </div>
+                {% endif %}
+
+                {% if location.memory_count > 6 %}
+                <a href="#" class="view-more" onclick="showAllPhotos('{{ location.location_name }}')">
+                    View all {{ location.memory_count }} photos
+                </a>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <h3>No locations found</h3>
+                <p>Try adjusting your filters to see more results</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Memories Section -->
+        {% if recent_memories %}
+        <div class="recent-memories-section">
+            <h2 class="section-title">🌟 Recent Public Memories</h2>
+            <div class="recent-memories-grid">
+                {% for memory in recent_memories|slice:":12" %}
+                <div class="memory-card" onclick="openModal('{{ memory.media_file.url }}', '{{ memory.memory_title|escapejs }}', '{{ memory.user.get_full_name|default:memory.user.username|escapejs }}', '{{ memory.location.location_name|escapejs }}', '{{ memory.description|escapejs }}')">
+                    {% if memory.media_file %}
+                    <img src="{{ memory.media_file.url }}" alt="{{ memory.memory_title }}" class="memory-image">
+                    {% endif %}
+                    <div class="memory-info">
+                        <div class="memory-title">{{ memory.memory_title|truncatechars:30 }}</div>
+                        <div class="memory-location-info">📍 {{ memory.location.location_name }}</div>
+                        <div class="memory-author">by {{ memory.user.get_full_name|default:memory.user.username }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="photo-modal" onclick="closeModal()">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <img id="modalImage" class="modal-image" src="" alt="">
+            <div class="modal-info">
+                <h3 id="modalTitle"></h3>
+                <p id="modalLocation"></p>
+                <p id="modalAuthor"></p>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(imageSrc, title, author, location, description) {
+            const modal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalLocation = document.getElementById('modalLocation');
+            const modalAuthor = document.getElementById('modalAuthor');
+            const modalDescription = document.getElementById('modalDescription');
+
+            modalImage.src = imageSrc;
+            modalTitle.textContent = title;
+            modalLocation.textContent = `📍 ${location}`;
+            modalAuthor.textContent = `📷 by ${author}`;
+            modalDescription.textContent = description;
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('photoModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function showAllPhotos(locationName) {
+            alert(`Feature coming soon: View all photos for ${locationName}`);
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>  

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Friends - FindMe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            margin-bottom: 2rem;
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .user-username {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .add-friend-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .add-friend-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .add-friend-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .request-sent-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .request-sent-btn:hover {
+            background: #e0a800;
+        }
+
+        .request-received-btn {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .request-received-btn:hover {
+            background: #138496;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-input-group {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Add Friends</h1>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'dashboard' %}" class="nav-link">← Dashboard</a>
+            <a href="{% url 'friend_requests' %}" class="nav-link">Friend Requests</a>
+            <a href="{% url 'friends_list' %}" class="nav-link">My Friends</a>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="search-container">
+            <form method="GET" class="search-form">
+                <div class="search-input-group">
+                    <input type="text" 
+                           name="q" 
+                           value="{{ query }}" 
+                           placeholder="Search by username, first name, or last name..." 
+                           class="search-input">
+                    <button type="submit" class="search-btn">🔍 Search</button>
+                </div>
+            </form>
+
+            <div class="results-section">
+                {% if query %}
+                    <h2 class="section-title">Search Results for "{{ query }}"</h2>
+                {% else %}
+                    <h2 class="section-title">All Users</h2>
+                {% endif %}
+                
+                {% if users_with_status %}
+                    {% for user_data in users_with_status %}
+                        <div class="user-card">
+                            <div class="user-avatar">
+                                {{ user_data.user.first_name|first|default:user_data.user.username|first|upper }}
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">
+                                    {{ user_data.user.first_name }} {{ user_data.user.last_name|default:"" }}
+                                </div>
+                                <div class="user-username">@{{ user_data.user.username }}</div>
+                            </div>
+                            
+                            {% if user_data.status == 'can_add' %}
+                                <form method="POST" action="{% url 'send_friend_request' user_data.user.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-friend-btn">Add Friend</button>
+                                </form>
+                            {% elif user_data.status == 'request_sent' %}
+                                <button class="add-friend-btn request-sent-btn" disabled>Request Sent</button>
+                            {% elif user_data.status == 'request_received' %}
+                                <a href="{% url 'friend_requests' %}" class="add-friend-btn request-received-btn" style="text-decoration: none; text-align: center; display: inline-block;">View Request</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {% if query %}
+                        <div class="empty-state">
+                            <div class="empty-icon">🔍</div>
+                            <h3>No users found</h3>
+                            <p>Try searching with different keywords</p>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">👥</div>
+                            <h3>No users available</h3>
+                            <p>It looks like you're already friends with everyone or there are no other users yet!</p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>   
+
+
+
+
